@@ -1,1 +1,1 @@
-# java-basic
+# java-spring-boot-practice
