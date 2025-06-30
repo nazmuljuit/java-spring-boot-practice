@@ -1,6 +1,8 @@
 package com.app.ecommerce;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,18 +14,23 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/api/users")
-    public List<User> getAllUsers() {
-        return userService.fetchAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(userService.fetchAllUsers(),
+                                                 HttpStatus.OK);
     }
 
     @GetMapping("/api/users/{id}")
-    public User getUser(@PathVariable Long id) {
-        return userService.fetcUser(id);
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        User user = userService.fetcUser(id);
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/api/users")
-    private String createUser(@RequestBody User user) {
+    private ResponseEntity<String> createUser(@RequestBody User user) {
         userService.addUser(user);
-        return "User added successfully";
+        return ResponseEntity.ok("User added successfully");
     }
 }
